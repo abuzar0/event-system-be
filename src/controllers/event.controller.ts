@@ -1,7 +1,6 @@
 import { UserService } from './../services/user.service';
 import { EventService } from './../services/event.service';
 import { Request, Response } from "express";
-import mongoose from 'mongoose';
 
 
 export class EventController {
