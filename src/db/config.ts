@@ -1,14 +1,3 @@
-// import { Sequelize } from "sequelize";
-
-// // Initialize the Sequelize database
-
-// export const initDB =  () => {
-//   return  new Sequelize({
-//     dialect: "sqlite",
-//     storage: "./database.sqlite",
-//   });
-// };
-
 const mongoose = require('mongoose');
 const MONGODB_URL = process.env.MONGODB_URL;
 
