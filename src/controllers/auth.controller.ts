@@ -93,31 +93,33 @@ export class AuthController {
 
 
   static async refreshToken(req: Request, res: Response) {
-    // try {
-    //   const ref_token = req.cookies?.refreshToken || req.cookies?.['refresh_token'];
-    //   const isValidToken = await JwtMiddleWare.verifyRefreshToken(ref_token);
-    //   const accessToken = await JwtMiddleWare.generateToken(
-    //     isValidToken._id,
-    //     isValidToken.email
-    //   );
-    //   const refreshToken = await JwtMiddleWare.generateRefreshToken(
-    //     isValidToken._id,
-    //     isValidToken.email,
-    //     isValidToken.version
-    //   );
-    //   res.cookie('access_token', accessToken, { httpOnly: true });
-    //   res.cookie('refresh_Token', refreshToken, { httpOnly: true })
-    //   return res.status(200).json({ message: "token refresh  !" });
+    try {
+      const ref_token = req.cookies?.refreshToken || req.cookies?.['refresh_token'];
+      const isValidToken = await JwtMiddleWare.verifyRefreshToken(ref_token);
+      const accessToken = await JwtMiddleWare.generateToken(
+        isValidToken._id,
+        isValidToken.email,
+        isValidToken.role
+      );
+      const refreshToken = await JwtMiddleWare.generateRefreshToken(
+        isValidToken._id,
+        isValidToken.email,
+        isValidToken.role,
+        isValidToken.version
+      );
+      res.cookie('access_token', accessToken, { httpOnly: true });
+      res.cookie('refresh_Token', refreshToken, { httpOnly: true })
+      return res.status(200).json({ message: "token refresh  !" });
 
 
-    // } catch (error: unknown) {
-    //   if (error instanceof Error) {
-    //     return res.status(500).json({ message: error.message });
-    //   } else {
-    //     return res
-    //       .status(500)
-    //       .json({ message: "An unexpected error occurred" });
-    //   }
-    // }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      } else {
+        return res
+          .status(500)
+          .json({ message: "An unexpected error occurred" });
+      }
+    }
   }
 }
