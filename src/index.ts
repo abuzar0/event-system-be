@@ -26,7 +26,7 @@ initDB();
 app.use(logger("dev"));
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:3000', // Your FRONTEND app origin
+  origin: 'http://localhost:4200', // Your FRONTEND app origin
   credentials: true // Allow credentials (cookies) to be sent
 }));
 app.use(express.json());

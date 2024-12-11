@@ -19,10 +19,6 @@ const userModel = new mongoose.Schema({
         ref: 'Role',
         require: true
     },
-    event_list: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Event'
-    }],
     isActive: {
         type: Boolean,
         default: true

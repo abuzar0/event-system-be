@@ -9,11 +9,20 @@ export class EventController {
       const { page = 1, limit = 10 } = req.query;
       const pageNumber = Number(page);
       const pageSize = Number(limit);
-
+      const options = {
+        population: [
+          {
+            path: 'createdBy',
+            select: 'username email',
+          },
+        ],
+        select: []
+      };
 
       const { events, total, totalPages } = await EventService.getMany(
         { isActive: true },
-        { page: pageNumber, limit: pageSize }
+        { page: pageNumber, limit: pageSize },
+        options
       );
 
       return res.status(200).json({
@@ -40,7 +49,8 @@ export class EventController {
 
   static createEvent = async (req: Request, res: Response) => {
     try {
-      const event = await EventService.create(req.body);
+      const user = req.user;
+      const event = await EventService.create({ ...req.body, createdBy: user?._id });
       return res.status(201).json({ message: "event created !", data: event, isSuccess: true })
     } catch (error) {
       if (error instanceof Error) {
@@ -57,14 +67,14 @@ export class EventController {
   static joinEvent = async (req: Request, res: Response) => {
     try {
       const user = req['user'];
-      const getUser = await UserService.getById(user?._id ?? '');
-      if (!getUser) {
-        throw new Error('User not found');
+      const eventId = req.body.eventId;
+      const event = await EventService.getById(eventId);
+      if (!event) {
+        throw new Error('event not found');
       }
 
-      const eventId = req.body.eventId;
-      if (!getUser.event_list.includes(eventId)) {
-        const updated = await UserService.update(String(getUser._id), { event_list: [...getUser.event_list, eventId] });
+      if (!event.participants.includes(user?._id || "")) {
+        const updated = await EventService.update(String(eventId), { participants: [...event.participants, user?._id] });
         return res.status(201).json({ message: "event join !", data: updated, isSuccess: true })
       }
       return res.status(200).json({ message: "you already  join the event!", isSuccess: true })

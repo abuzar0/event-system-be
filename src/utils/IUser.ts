@@ -7,7 +7,6 @@ export interface IUser extends Document {
   username: string;
   password: string;
   role: mongoose.Types.ObjectId | IRole;
-  event_list: mongoose.Types.ObjectId[];
   isActive: boolean;
   version: number;
   created: Date;

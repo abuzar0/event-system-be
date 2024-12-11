@@ -1,5 +1,6 @@
 import { Event } from "../models/event.model";
 import { IEvent } from "../utils/IEvent";
+import { IOptions } from "../utils/IOption";
 
 export class EventService {
 
@@ -22,7 +23,7 @@ export class EventService {
   static async getMany(
     findDto: any,
     pagination = { limit: 10, page: 1 },
-    options = { population: [], select: [] }
+    options: IOptions = { population: [], select: [] }
   ): Promise<{ events: IEvent[]; total: number; totalPages: number }> {
 
     const skip = (pagination.page - 1) * pagination.limit;

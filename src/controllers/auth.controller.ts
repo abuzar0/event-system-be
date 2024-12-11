@@ -71,7 +71,7 @@ export class AuthController {
             );
             res.cookie('access_token', accessToken, { httpOnly: true });
             res.cookie('refresh_token', refreshToken, { httpOnly: true })
-            return res.status(200).json({ message: "login !" });
+            return res.status(200).json({ message: "login !", data: { _id: user._id, role: role.type } });
           }
         }
 
