@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 export class EventController {
   static getAll = async (req: Request, res: Response) => {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10} = req.query;
       const pageNumber = Number(page);
       const pageSize = Number(limit);
       const options = {
