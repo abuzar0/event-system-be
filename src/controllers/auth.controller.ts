@@ -94,7 +94,7 @@ export class AuthController {
 
   static async refreshToken(req: Request, res: Response) {
     try {
-      const ref_token = req.cookies?.refreshToken || req.cookies?.['refresh_token'];
+      const ref_token = req.cookies?.refresh_token;
       const isValidToken = await JwtMiddleWare.verifyRefreshToken(ref_token);
       const accessToken = await JwtMiddleWare.generateToken(
         isValidToken._id,
@@ -111,6 +111,26 @@ export class AuthController {
       res.cookie('refresh_Token', refreshToken, { httpOnly: true })
       return res.status(200).json({ message: "token refresh  !" });
 
+
+    } catch (error: unknown) {
+      console.log(error)
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      } else {
+        return res
+          .status(500)
+          .json({ message: "An unexpected error occurred" });
+      }
+    }
+  }
+
+
+  static async logout(req: Request, res: Response) {
+    try {
+
+      res.clearCookie('accessToken', { httpOnly: true, secure: true, sameSite: 'strict' });
+      res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'strict' });
+      res.status(200).json({ message: 'Logged out successfully' });
 
     } catch (error: unknown) {
       if (error instanceof Error) {

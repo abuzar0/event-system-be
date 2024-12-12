@@ -6,7 +6,8 @@ import { Request, Response } from "express";
 export class EventController {
   static getAll = async (req: Request, res: Response) => {
     try {
-      const { page = 1, limit = 10} = req.query;
+      const { page = 1, limit = 10 } = req.query;
+      const search = req.query.search as string | undefined;
       const pageNumber = Number(page);
       const pageSize = Number(limit);
       const options = {
@@ -18,9 +19,16 @@ export class EventController {
         ],
         select: []
       };
+      const query: {
+        isActive: boolean;
+        name?: { $regex: string; $options: string };
+      } = { isActive: true };
 
+      if (search) {
+        query.name = { $regex: search, $options: 'i' };
+      }
       const { events, total, totalPages } = await EventService.getMany(
-        { isActive: true },
+        query,
         { page: pageNumber, limit: pageSize },
         options
       );
@@ -50,7 +58,8 @@ export class EventController {
   static createEvent = async (req: Request, res: Response) => {
     try {
       const user = req.user;
-      const event = await EventService.create({ ...req.body, createdBy: user?._id });
+      const { date, ...rest } = req.body;
+      const event = await EventService.create({ ...rest, event_date: date, createdBy: user?._id });
       return res.status(201).json({ message: "event created !", data: event, isSuccess: true })
     } catch (error) {
       if (error instanceof Error) {
@@ -67,7 +76,7 @@ export class EventController {
   static joinEvent = async (req: Request, res: Response) => {
     try {
       const user = req['user'];
-      const eventId = req.body.eventId;
+      const eventId = req.body._id;
       const event = await EventService.getById(eventId);
       if (!event) {
         throw new Error('event not found');
