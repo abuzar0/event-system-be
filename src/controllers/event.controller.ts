@@ -76,7 +76,7 @@ export class EventController {
   static joinEvent = async (req: Request, res: Response) => {
     try {
       const user = req['user'];
-      const eventId = req.body.eventId;
+      const eventId = req.body._id;
       const event = await EventService.getById(eventId);
       if (!event) {
         throw new Error('event not found');
