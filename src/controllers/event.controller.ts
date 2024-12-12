@@ -58,7 +58,8 @@ export class EventController {
   static createEvent = async (req: Request, res: Response) => {
     try {
       const user = req.user;
-      const event = await EventService.create({ ...req.body, createdBy: user?._id });
+      const { date, ...rest } = req.body;
+      const event = await EventService.create({ ...rest, event_date: date, createdBy: user?._id });
       return res.status(201).json({ message: "event created !", data: event, isSuccess: true })
     } catch (error) {
       if (error instanceof Error) {

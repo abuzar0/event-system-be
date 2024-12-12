@@ -14,6 +14,10 @@ const eventModel = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    event_date:{
+        type: Date,
+        require:true
+    },
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: 'User'
