@@ -94,7 +94,7 @@ export class AuthController {
 
   static async refreshToken(req: Request, res: Response) {
     try {
-      const ref_token = req.cookies?.refreshToken || req.cookies?.['refresh_token'];
+      const ref_token = req.cookies?.refresh_token;
       const isValidToken = await JwtMiddleWare.verifyRefreshToken(ref_token);
       const accessToken = await JwtMiddleWare.generateToken(
         isValidToken._id,
@@ -113,6 +113,7 @@ export class AuthController {
 
 
     } catch (error: unknown) {
+      console.log(error)
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
       } else {
