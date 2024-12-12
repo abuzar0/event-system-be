@@ -123,4 +123,23 @@ export class AuthController {
       }
     }
   }
+
+
+  static async logout(req: Request, res: Response) {
+    try {
+
+      res.clearCookie('accessToken', { httpOnly: true, secure: true, sameSite: 'strict' });
+      res.clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'strict' });
+      res.status(200).json({ message: 'Logged out successfully' });
+
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      } else {
+        return res
+          .status(500)
+          .json({ message: "An unexpected error occurred" });
+      }
+    }
+  }
 }
