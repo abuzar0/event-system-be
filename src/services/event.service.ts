@@ -1,3 +1,4 @@
+import { SortOrder } from "mongoose";
 import { Event } from "../models/event.model";
 import { IEvent } from "../utils/IEvent";
 import { IOptions } from "../utils/IOption";
@@ -22,15 +23,17 @@ export class EventService {
 
   static async getMany(
     findDto: any,
-    pagination = { limit: 10, page: 1 },
+    pagination = { limit: 10, page: 1,sort: { createdAt: -1 as SortOrder }},
     options: IOptions = { population: [], select: [] }
   ): Promise<{ events: IEvent[]; total: number; totalPages: number }> {
 
     const skip = (pagination.page - 1) * pagination.limit;
     const limit = pagination.limit;
+    const sort = pagination.sort || { createdAt: -1 };
 
     const events = await Event.find(findDto, options.select)
       .populate(options.population || [])
+      .sort(sort)
       .skip(skip)
       .limit(limit)
       .exec();

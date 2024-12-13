@@ -1,15 +1,18 @@
 import { UserService } from './../services/user.service';
 import { EventService } from './../services/event.service';
 import { Request, Response } from "express";
+import { SortOrder } from 'mongoose';
 
 
 export class EventController {
   static getAll = async (req: Request, res: Response) => {
     try {
-      const { page = 1, limit = 10 } = req.query;
+      const { page = 1, limit = 10,sort = 'desc' } = req.query;
       const search = req.query.search as string | undefined;
       const pageNumber = Number(page);
       const pageSize = Number(limit);
+      const sortOrder = sort === 'asc' ? 1 : -1; 
+      const sortBy = { createdAt: sortOrder  as SortOrder  };
       const options = {
         population: [
           {
@@ -29,7 +32,7 @@ export class EventController {
       }
       const { events, total, totalPages } = await EventService.getMany(
         query,
-        { page: pageNumber, limit: pageSize },
+        { page: pageNumber, limit: pageSize,sort: sortBy },
         options
       );
 

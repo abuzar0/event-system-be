@@ -20,7 +20,7 @@ export const seedDatabase = async () => {
             },
             {
                 type: 'user',
-                permissions: ['create_event', 'join_event'],
+                permissions: ['create_event', 'join_event','view_event'],
                 isActive: true,
             },
         ];
