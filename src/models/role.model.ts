@@ -1,10 +1,14 @@
-import mongoose  from 'mongoose';
+import mongoose from 'mongoose';
 import { IRole } from '../utils/IRole';
 
 const roleModel = new mongoose.Schema({
     type: {
         type: String,
         require: true
+    },
+    permissions: {
+        type: [String],
+        default: [],
     },
     isActive: {
         type: Boolean,
@@ -20,4 +24,4 @@ const roleModel = new mongoose.Schema({
     }
 })
 
-export const Role =mongoose.model<IRole>('Role', roleModel)
+export const Role = mongoose.model<IRole>('Role', roleModel)

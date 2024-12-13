@@ -52,7 +52,6 @@ export class AuthController {
         const user = f_user[0];
         const { password, role, ...rest } = user;
         if (isIRole(role)) {
-          console.log(role._id, role.type)
           const isPasswordMatch = await verifyPassword(
             req.body.password,
             password
@@ -76,7 +75,7 @@ export class AuthController {
         }
 
 
-        return res.status(401).json({ message: "invalid role" });
+        return res.status(401).json({ message: "invalid role"});
       } else {
         return res.status(401).json({ message: "invalid credentials" });
       }

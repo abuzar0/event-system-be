@@ -13,6 +13,7 @@ import cookieParser from 'cookie-parser';
 
 import mainRoute from './routes/main.route'
 import { initDB } from "./db/config";
+import { seedDatabase } from "./utils/seed";
 
 // setup packages
 
@@ -21,8 +22,10 @@ const port = process.env.PORT;
 // DataBase creating Instance
 
 initDB();
-// ------- initialize our instances --------
+// -------seed data
+seedDatabase();
 
+// ------- initialize our instances --------
 app.use(logger("dev"));
 app.use(cookieParser());
 app.use(cors({

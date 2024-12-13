@@ -33,4 +33,21 @@ export class RoleController {
             }
         }
     }
+
+    static async updateRole(req: Request, res: Response) {
+        try {
+            const { id } = req.params;
+            const body = req.body;
+            const roles = await RoleService.update(id, body);
+            return res.status(201).json({ message: "role updated !", data: roles, isSuccess: true })
+        } catch (error) {
+            if (error instanceof Error) {
+                return res.status(500).json({ message: error.message, isSuccess: false });
+            } else {
+                return res
+                    .status(500)
+                    .json({ message: "An unexpected error occurred", isSuccess: false });
+            }
+        }
+    }
 }

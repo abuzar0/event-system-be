@@ -12,8 +12,8 @@ export class UserService {
     return user.save();
   }
 
-  static async getById(userId: string, { population = [] } = { population: [] }): Promise<IUser> {
-    const user = await User.findById(userId).populate(population).exec();
+  static async getById(userId: string, options: IOptions = { population: [], select: [] }): Promise<IUser> {
+    const user = await User.findById({ _id: userId },options.select).populate(options.population).exec();
     if (!user) {
       throw Error('user not found');
     }
@@ -43,7 +43,7 @@ export class UserService {
   ) {
 
     try {
-     
+
       const updatedRole = User.findByIdAndUpdate(userId, flatten ? { $set: updateDto } : updateDto, { lean, upsert, new: returnNew });
       return updatedRole;
     } catch (error) {

@@ -1,6 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtMiddleWare } from "./jwt.middleware";
 import { JwtPayload } from "../utils/Ijwt";
+import { UserService } from "../services/user.service";
+import { IOptions } from "../utils/IOption";
+import { IRole } from "../utils/IRole";
 
 declare global {
   namespace Express {
@@ -10,21 +13,52 @@ declare global {
   }
 }
 export class AuthorizeMiddleWare {
-  static hasPermissionUser = (requiredPermission: string) => {
+  static hasPermission = (requiredPermission: string) => {
     return async (req: Request, res: Response, next: NextFunction) => {
-      const user = req['user'];
-      // console.log("user===>", user)
-      if (!user) {
-        return res.status(401).json({ message: 'User data not found in request', success: false });
-      }
+      try {
+        const user = req['user'];
+        if (!user) {
+          return res.status(401).json({
+            message: 'User data not found in the request',
+            success: false,
+          });
+        }
+        const options: IOptions = {
+          population: [
+            {
+              path: 'role',
+              select: 'permissions type',
+            },
+          ],
+          select: []
+        };
+        
 
-      if (user.role != requiredPermission) {
-        return res.status(403).json({ message: 'Forbidden: Insufficient permissions', success: false });
-      }
+        const userWithRole = await UserService.getById(user._id, options);
 
-      next();
+        if (!userWithRole || !userWithRole.role || !('permissions' in userWithRole.role)) {
+          return res.status(403).json({
+            message: 'User role or permissions not found',
+            success: false,
+          });
+        }
+
+        const permissions  = userWithRole.role.permissions;
+        if (permissions.includes(requiredPermission)) {
+          return next();
+        }
+
+        return res.status(403).json({
+          message: 'User does not have the required permission',
+          success: false,
+        });
+      } catch (error) {
+        console.error('Error in permission middleware:', error);
+        return res.status(500).json({
+          message: 'Internal server error',
+          success: false,
+        });
+      }
     };
   };
-
-
 }
