@@ -44,7 +44,6 @@ export class AuthorizeMiddleWare {
         }
 
         const permissions  = userWithRole.role.permissions;
-        console.log("premissions",permissions)
         if (permissions.includes(requiredPermission)) {
           return next();
         }

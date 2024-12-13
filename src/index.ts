@@ -23,7 +23,7 @@ const port = process.env.PORT;
 
 initDB();
 // -------seed data
-// seedDatabase();
+seedDatabase();
 
 // ------- initialize our instances --------
 app.use(logger("dev"));

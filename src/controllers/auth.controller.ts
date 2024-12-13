@@ -52,7 +52,6 @@ export class AuthController {
         const user = f_user[0];
         const { password, role, ...rest } = user;
         if (isIRole(role)) {
-          console.log("details",role._id, role.type)
           const isPasswordMatch = await verifyPassword(
             req.body.password,
             password
